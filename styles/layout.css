@@ -1,0 +1,54 @@
+:root {
+  /* default theme color */
+  /* can be overrided by uses `themeConfig` option */
+  --slidev-theme-primary: #6341da;
+  --slidev-white: #f1f3f9;
+  --slidev-theme-gradient: linear-gradient(
+    to bottom right,
+    #6441db 0%,
+    #964be6 70%,
+    #ff5dff 100%
+  );
+  --slidev-background: var(--slidev-white);
+  --slidev-title-color: linear-gradient(
+    to bottom right,
+    #6441db 0%,
+    #964be6 50%,
+    #ff5dff 100%
+  );
+
+  &.dark {
+    --slidev-background: var(--slidev-theme-gradient);
+    --slidev-theme-primary: var(--slidev-white);
+    --slidev-title-color: var(--slidev-white);
+  }
+}
+.slidev-layout {
+  background: var(--slidev-background);
+  h1 {
+    display: inline-block;
+    background: var(--slidev-title-color);
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+}
+
+.slidev-layout.cover,
+.slidev-layout.intro {
+  @apply h-full grid;
+
+  h1 {
+    @apply text-6xl leading-20;
+  }
+
+  h1 + p {
+    @apply -mt-2 opacity-50 mb-4;
+  }
+
+  p + h2,
+  ul + h2,
+  table + h2 {
+    @apply mt-10;
+  }
+}
