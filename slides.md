@@ -32,9 +32,9 @@ layout: intro
 
 # Github Actions
 
-L'intégration continue sans douleur
+Reprenez votre CI en main
 
-Par Damien Fernandes 
+Damien Fernandes 
 
 <div class="abs-br m-6 flex gap-2">
   <a href="https://github.com/damienfern" target="_blank" alt="GitHub" title="Open in GitHub"
