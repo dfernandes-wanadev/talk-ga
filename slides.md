@@ -9,7 +9,7 @@ highlighter: "all"
 lineNumber: true
 
 # some information about your slides (markdown enabled)
-title: Welcome to Slidev
+title: Github Actions 
 info: |
   ## Slidev Starter Template
   Presentation slides for developers.
@@ -46,26 +46,120 @@ Damien Fernandes
 </div>
 
 
+<!-- But de la présentation :
+- vous aider à mieux comprendre GA
+- 
+- vous donner des tips 
+-->
+
 ---
-transition: fade-out
+layout: quote
 ---
 
-# What is Slidev?
+# <span v-mark>Disclaimer</span>
 
-Slidev is a slides maker and presenter designed for developers, consist of the following features
 
-- 📝 **Text-based** - focus on the content with Markdown, and then style them later
-- 🎨 **Themable** - themes can be shared and re-used as npm packages
-- 🧑‍💻 **Developer Friendly** - code highlighting, live coding with autocompletion
-- 🤹 **Interactive** - embed Vue components to enhance your expressions
-- 🎥 **Recording** - built-in recording and camera view
-- 📤 **Portable** - export to PDF, PPTX, PNGs, or even a hostable SPA
-- 🛠 **Hackable** - virtually anything that's possible on a webpage is possible in Slidev
-<br>
-<br>
+---
+layout: image-right
+image: /portrait.jpg
+---
 
-Read more about [Why Slidev?](https://sli.dev/guide/why)
+# Moi, c'est Damien
 
+Lead Dev chez WanadevDigital depuis 2 ans et demi
+
+- Vue, Typescript
+- PHP, Symfony
+- DevOps
+
+
+Travaille principalement sur le projet Kazaplan
+
+<!-- TODO : insert Wanadev digital logo -->
+
+---
+
+Présentation Kazaplan
+
+---
+
+
+Présentation problématique 
+
+Migrer le BO de Gitlab vers Github Action
+
+---
+
+Introduction brève à la CI/CD avec les différents outils possibles (voir liste au dessus)
+
+---
+
+Introduction et présentation d’une CI GItlab avec les stages et présenter la philosophie (avec les rules et except/only)
+
+---
+
+Présentation Github Actions 
+
+---
+
+Présentation sur la philosophie basé sur les évènements du repo
+
+---
+
+Intégration du terme workflow 
+
+---
+
+Intégration des jobs (parallèle auto sauf si deps déclarés)
+
+---
+
+Introduction aux runners
+
+---
+
+Intégration des actions
+
+---
+
+Intégration du marketplace : sélectionner quelques actions pour le php
+
+---
+
+Intégration du cache avec gestion des ID
+
+---
+
+Intégration des actions composites
+
+---
+
+Trigger d’un workflow si modification d’un fichier en particulier
+
+
+---
+
+Matrices
+
+---
+
+Cancel des actions comme Symfony
+
+---
+
+Publication d’un artifact auto
+
+---
+
+Créer ses propres actions à mettre sur le marketplace
+
+---
+
+Sécurité
+
+---
+
+Le pricing repo privé/public
 
 ---
 layout: center

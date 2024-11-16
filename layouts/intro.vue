@@ -10,7 +10,6 @@
                 <img v-if="subjectImageSrc" :src="subjectImageSrc"
                     class="rounded-full p-2 absolute top-0 right-5 bg-gradient-to-r from-[#6441db] via-[#964be6] to-[#ff5dff] dark:(from-white to-purple-50)"
                     height="150" width="150" />
-                <!-- TODO : Add logo event -->
             </figure>
             <div class="w-1/2">
                 <slot />

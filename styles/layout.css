@@ -34,6 +34,14 @@
   }
 }
 
+.slidev-layout.quote {
+  @apply h-full;
+
+  h1 {
+    @apply text-9xl;
+  }
+}
+
 .slidev-layout.cover,
 .slidev-layout.intro {
   @apply h-full grid;
