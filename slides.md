@@ -66,20 +66,42 @@ image: /portrait.jpg
 
 # Moi, c'est Damien
 
-Lead Dev chez WanadevDigital depuis 2 ans et demi
+Lead Dev chez WanadevDigital
 
-- Vue, Typescript
 - PHP, Symfony
+- Vue, Typescript
 - DevOps
 
-
-Travaille principalement sur le projet Kazaplan
-
-<!-- TODO : insert Wanadev digital logo -->
+<div class="grid grid-cols-2 items-center pt-10" >
+  <img src="/wd-logo.webp"  height="150" width="150" class="rounded-lg" />
+  <img src="/kazaplan-logo.png" height="150" width="150" />
+</div>
 
 ---
+layout: image 
+image: "/kazaplan-slide1.png"
+backgroundSize: contain
+---
 
-Présentation Kazaplan
+<!-- TODO : remove white from images -->
+<!-- TODO : add layout to add page number -->
+
+---
+layout: image 
+image: "/kazaplan-configure.png"
+backgroundSize: contain
+---
+
+<!-- TODO : remove white from images -->
+
+---
+layout: image 
+image: "/kazaplan-hd.png"
+backgroundSize: contain
+---
+
+<!-- TODO : remove white from images -->
+
 
 ---
 
