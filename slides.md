@@ -484,24 +484,501 @@ jobs:
 
 ---
 
-Intégration des actions
+# Utiliser une base de donnée pour vos tests 
+
+```yaml
+# ...
+jobs:
+  unit-test:
+    name: Unit Testing
+    runs-on: macos-latest
+  services:
+      redis:
+          image: redis:6-alpine
+          ports:
+              - 6379:6379
+      postgres-functional:
+          image: postgres:13-alpine
+          env:
+              POSTGRES_USER: user
+              POSTGRES_PASSWORD: password
+              POSTGRES_DB: db
+          ports:
+              - 5432:5432
+```
 
 ---
 
-Intégration du marketplace : sélectionner quelques actions pour le php
+# Les steps
+
+- Des tâches qui composent un job
+- Lancé de manière séquentielle
+- Chaque step est lancée dans son process (WARNING: Si vous changez des env vars, elles ne seront pas répercutés)
+- 2 grandes familles :
+  - les shell
+  - les actions
+ 
+---
+
+
+````md magic-move
+```yaml
+# ...
+jobs:
+  unit-test:
+    # ... ubuntu
+    steps:
+```
+```yaml
+# ...
+jobs:
+  unit-test:
+    # ... ubuntu
+    steps:
+      - name: Checkout code
+```
+```yaml
+# ...
+jobs:
+  unit-test:
+    # ... ubuntu
+    steps:
+      - name: Checkout code
+        run: |
+          echo "Cloning repository..."
+          git clone ${{ github.repository }} .
+          echo "Repository cloned."
+```
+```yaml
+# ...
+jobs:
+  unit-test:
+    # ... ubuntu
+    steps:
+      - name: Checkout code
+        run: |
+          echo "Cloning repository..."
+          git clone ${{ github.repository }} .
+          echo "Repository cloned."
+
+      - name: Set up PHP and Composer
+        run: |
+          echo "Updating system packages..."
+          sudo apt-get update -y
+          echo "Installing PHP and required extensions..."
+          sudo apt-get install -y php-cli php-xml php-mbstring unzip curl
+          echo "Installing Composer..."
+          curl -sS https://getcomposer.org/installer | php
+          sudo mv composer.phar /usr/local/bin/composer
+          echo "PHP and Composer are ready."
+```
+```yaml
+# ...
+jobs:
+  unit-test:
+    # ... ubuntu
+    steps:
+      - name: Checkout code
+        run: |
+          echo "Cloning repository..."
+          git clone ${{ github.repository }} .
+          echo "Repository cloned."
+
+      - name: Set up PHP and Composer
+        run: |
+          echo "Updating system packages..."
+          sudo apt-get update -y
+          echo "Installing PHP and required extensions..."
+          sudo apt-get install -y php-cli php-xml php-mbstring unzip curl
+          echo "Installing Composer..."
+          curl -sS https://getcomposer.org/installer | php
+          sudo mv composer.phar /usr/local/bin/composer
+          echo "PHP and Composer are ready."
+        # ... install deps and run tests
+
+```
+```yaml {13,14,19}
+# ...
+jobs:
+  unit-test:
+    # ... ubuntu
+    steps:
+      - name: Checkout code
+        run: |
+          echo "Cloning repository..."
+          git clone ${{ github.repository }} .
+          echo "Repository cloned."
+
+      - name: Set up PHP and Composer
+        env:
+          PACKAGES: "php-cli php-xml php-mbstring unzip curl"
+        run: |
+          echo "Updating system packages..."
+          sudo apt-get update -y
+          echo "Installing PHP and required extensions..."
+          sudo apt-get install -y ${{ env.PACKAGES }}
+          echo "Installing Composer..."
+          curl -sS https://getcomposer.org/installer | php
+          sudo mv composer.phar /usr/local/bin/composer
+          echo "PHP and Composer are ready."
+        # ... install deps and run tests
+```
+```yaml
+# ...
+jobs:
+  unit-test:
+    # ... ubuntu
+    steps:
+      # ... clone, install php, composer and deps
+      - name: Run tests without coverage
+        if: ${{ steps.branch-name.outputs.current_branch != 'dev' }}
+        run:
+          # run phpunit command without coverage
+          
+      - name: Run tests with coverage
+        if: ${{ steps.branch-name.outputs.current_branch == 'dev' }} TODO add step to get current branch
+        run: 
+          # run phpunit command without coverage
+```
+````
 
 ---
 
-Intégration du cache avec gestion des ID
+# Les actions, simplifier vos steps
+
+````md magic-move
+```yaml
+# ...
+jobs:
+  unit-test:
+    # ... ubuntu
+    steps:
+      - name: Checkout code
+        run: |
+          echo "Cloning repository..."
+          git clone ${{ github.repository }} .
+          echo "Repository cloned."
+
+```
+```yaml
+# ...
+jobs:
+  unit-test:
+    # ... ubuntu
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+```
+```yaml
+# ...
+jobs:
+  unit-test:
+    # ... ubuntu
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+```
+````
 
 ---
 
-Intégration des actions composites
+# Les actions
+But : Découper en blocs fonctionnels, modulaires et réutilisable (DRY)
+
+<v-click>
+
+## 3 types d'actions :
+
+</v-click>
+<br>
+
+<v-clicks>
+
+- Fournies par Github (`actions/checkout`, `actions/cache`, `actions/http-client`)
+- Marketplace
+- Custom Actions
+
+</v-clicks>
 
 ---
 
-Trigger d’un workflow si modification d’un fichier en particulier
+# Les Custom Actions
 
+<v-clicks>
+
+- Partageable à :
+  - Projet
+  - Org
+  - Tout le monde
+- 3 manières de créer des actions :
+  - Image docker 
+  - Javascript
+  - Yaml (les composites actions)
+
+</v-clicks>
+
+---
+
+# Le MUST des actions du Marketplace PHP
+
+https://github.com/shivammathur/setup-php
+
+```yaml
+name: Setup PHP
+uses: shivammathur/setup-php@v2
+with:
+    php-version: 8.3
+    extensions: apcu,mbstring,opcache,pdo_pgsql,redis,xdebug,xml,zip
+    coverage: xdebug
+    ini-values: |
+        memory_limit=-1,
+```
+
+---
+
+# Quelques actions utiles : builder vos images Docker
+
+https://github.com/docker/build-push-action
+
+```yaml
+- name: Set up Docker Buildx
+  uses: docker/setup-buildx-action@v3
+- name: Login to Docker Hub
+  uses: docker/login-action@v3
+  with:
+    username: ${{ secrets.DOCKERHUB_USERNAME }}
+    password: ${{ secrets.DOCKERHUB_TOKEN }}
+- name: Build and push
+  uses: docker/build-push-action@v6
+  with:
+    push: true
+    tags: user/app:latest
+```
+
+---
+
+# Quelques actions utiles : Node
+
+
+https://github.com/actions/setup-node
+
+```yaml
+- uses: actions/setup-node@v4
+  with:
+    node-version: 18
+- run: npm ci
+- run: npm test
+```
+
+
+Une liste d'actions selon vos besoins : https://github.com/sdras/awesome-actions
+
+---
+
+# Cacher vos dépendances pour des CI plus rapides
+
+````md magic-move
+```yaml {all|4|6,7|8|9,10|all}
+# ...
+steps:
+    - name: Restore vendors from cache
+      uses: actions/cache@v4
+      with:
+          path: |
+              vendor
+          key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
+          restore-keys: |
+              ${{ runner.os }}-vendor-
+    - name: Behat
+      run: |
+        php ./vendor/bin/behat -f progress -o std
+```
+```yaml {all|12-15|4,13}
+# ...
+steps:
+    - name: Restore vendors from cache
+      id: cache-vendor
+      uses: actions/cache@v4
+      with:
+        path: |
+            vendor
+        key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
+        restore-keys: |
+            ${{ runner.os }}-vendor-
+    - name: Install PHP dependencies
+      if: ${{ steps.cache-vendor.outputs.cache-hit != 'true' }}
+      run: |
+          /usr/local/bin/composer install --no-progress --no-scripts
+    - name: Behat
+      run: |
+        php ./vendor/bin/behat -f progress -o std
+```
+````
+
+WARNING : Un nettoyage du cache est effectué par Github s'il n'est pas utilisé
+
+
+---
+
+# Les actions composites
+
+But : réutiliser et partager à travers des workflow des étapes d'un workflow
+
+Avantages :
+- Maintenance centralisée
+- Simplicité et lisibilité
+- DRY
+
+---
+---
+
+````md magic-move
+```yaml {all|1,2|3-7|8-11|12-14|13}
+name: 'Hello World'
+description: 'Greet someone'
+inputs:
+  who-to-greet:  # id of input
+    description: 'Who to greet'
+    required: true
+    default: 'World'
+outputs:
+  random-number:
+    description: "Random number"
+    value: ${{ steps.random-number-generator.outputs.random-number }}
+runs:
+  using: "composite"
+  steps:
+  # ...
+```
+```yaml {all|9-13|15-18|5,16|5,17}
+# ...
+outputs:
+  random-number:
+    description: "Random number"
+    value: ${{ steps.random-number-generator.outputs.random-number }}
+runs:
+  using: "composite"
+  steps:
+    - name: Set Greeting
+      run: echo "Hello $INPUT_WHO_TO_GREET."
+      shell: bash
+      env:
+        INPUT_WHO_TO_GREET: ${{ inputs.who-to-greet }}
+
+    - name: Random Number Generator
+      id: random-number-generator
+      run: echo "random-number=$(echo $RANDOM)" >> $GITHUB_OUTPUT
+      shell: bash
+
+```
+````
+
+---
+---
+
+```yaml
+
+# .github/actions/install-deps/action.yml
+name: "Install dependencies"
+description: "Install PHP dependencies"
+
+runs:
+    using: "composite"
+    steps:
+        - name: Setup PHP
+          uses: shivammathur/setup-php@v2
+          with:
+              php-version: 8.3
+              extensions: apcu,bcmath,intl,ldap,mbstring,opcache,pdo_pgsql,redis,xdebug,xml,zip
+
+        - name: Restore vendors from cache
+          uses: actions/cache@v4
+          with:
+              path: |
+                  vendor
+                  node_modules
+              key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
+              restore-keys: |
+                  ${{ runner.os }}-vendor-
+
+        - name: Install PHP dependencies
+          run: |
+              /usr/local/bin/composer install --no-progress --no-scripts
+          shell: bash
+```
+
+---
+---
+
+```yaml {all|7-8}
+# ...
+steps:
+    -   uses: actions/checkout@v4
+        with:
+            fetch-depth: 1
+
+    -   name: Setup common configuration
+        uses: './.github/actions/install-deps'
+
+    # ...
+
+```
+
+---
+
+
+# Trigger d’un workflow si modification d’un fichier en particulier
+
+Peut etre pas utile car déjà présenté plus haut mais alternative à voir 
+https://github.com/dorny/paths-filter
+
+---
+
+Créer ses propres actions à mettre sur le marketplace
+
+---
+
+Sécurité
+
+---
+
+Le pricing repo privé/public
+
+---
+
+# Dernier exemple : The Last Dance
+
+Déploiement de ses slides avec GA
+
+---
+
+# Source 
+
+https://blog.stephane-robert.info/docs/pipeline-cicd/github/introduction/
+
+Doc github actions
+
+---
+layout: center
+class: text-center
+---
+
+# Merci
+
+---
+layout: center
+class: text-center
+---
+
+# BONUS
+
+<br/>
+
+<img src="/bonus-b99.webp" />
 
 ---
 
@@ -515,27 +992,6 @@ Cancel des actions comme Symfony
 
 Publication d’un artifact auto
 
----
-
-Créer ses propres actions à mettre sur le marketplace
-
----
-
-Sécurité
-
----
-
-Le pricing repo privé/public
----
-
-# Source 
-
-https://blog.stephane-robert.info/docs/pipeline-cicd/github/introduction/
-Doc github actions
-
----
-layout: center
-class: text-center
 ---
 
 # Learn More
