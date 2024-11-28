@@ -45,18 +45,22 @@ Damien Fernandes
 </div>
 
 
-<!-- But de la présentation :
-- vous aider à mieux comprendre GA
-- 
-- vous donner des tips 
--->
-
 ---
 layout: quote
 ---
 
 # <span v-mark>Disclaimer</span>
 
+<!-- Je ne suis pas un Devops.
+Je suis juste un dev qui adore apprendre de nouvelles choses.
+Le but de cette prez n'est pas d'aller voir le gars qui s'en occupe à 100% et dire "j'ai vu ça dans talk" 
+Si vous avez déjà quelqu'un qui s'occupe de ça et dont c'est son job à 100%, il a potentiellement une bonne raison de ne pas avoir fait ça.
+
+Le but : 
+- vous aider à mieux comprendre GA et votre CI (ou vos projets persos)
+- Vous donner quelques tips qui peuvent vous faire gagner du temps
+
+ -->
 
 ---
 layout: image-right
@@ -630,6 +634,9 @@ jobs:
     # ... ubuntu
     steps:
       # ... clone, install php, composer and deps
+      - name: Get branch name
+        id: branch-name
+        run: echo "current_branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
       - name: Run tests without coverage
         if: ${{ steps.branch-name.outputs.current_branch != 'dev' }}
         run:
@@ -930,18 +937,6 @@ steps:
 
 ---
 
-
-# Trigger d’un workflow si modification d’un fichier en particulier
-
-Peut etre pas utile car déjà présenté plus haut mais alternative à voir 
-https://github.com/dorny/paths-filter
-
----
-
-Créer ses propres actions à mettre sur le marketplace
-
----
-
 Sécurité
 
 ---
@@ -949,10 +944,23 @@ Sécurité
 Le pricing repo privé/public
 
 ---
+layout: center
+class: text-center
+---
 
 # Dernier exemple : The Last Dance
 
-Déploiement de ses slides avec GA
+<br/>
+
+<img src="/dunk-jordan.webp" />
+
+---
+
+# Déployer nos slides sur Github Pages
+
+<br/>
+
+<PoweredBySlidev mt-10 />
 
 ---
 
@@ -992,6 +1000,21 @@ Cancel des actions comme Symfony
 
 Publication d’un artifact auto
 
+---
+
+# Trigger d’un workflow si modification d’un fichier en particulier
+
+Peut etre pas utile car déjà présenté plus haut mais alternative à voir 
+https://github.com/dorny/paths-filter
+
+---
+
+Créer ses propres actions à mettre sur le marketplace
+
+
+---
+layout: center
+class: text-center
 ---
 
 # Learn More
