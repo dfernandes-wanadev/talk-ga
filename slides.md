@@ -51,7 +51,9 @@ layout: quote
 
 # <span v-mark>Disclaimer</span>
 
-<!-- Je ne suis pas un Devops.
+<!-- 
+
+Je ne suis pas un Devops.
 Je suis juste un dev qui adore apprendre de nouvelles choses.
 Le but de cette prez n'est pas d'aller voir le gars qui s'en occupe à 100% et dire "j'ai vu ça dans talk" 
 Si vous avez déjà quelqu'un qui s'occupe de ça et dont c'est son job à 100%, il a potentiellement une bonne raison de ne pas avoir fait ça.
@@ -60,7 +62,7 @@ Le but :
 - vous aider à mieux comprendre GA et votre CI (ou vos projets persos)
 - Vous donner quelques tips qui peuvent vous faire gagner du temps
 
- -->
+-->
 
 ---
 layout: image-right
@@ -198,8 +200,9 @@ image: /gha_logo.svg
 - Avec une philosophie de fonctionnement complètement différente de Gitlab CI/CD
 - Utilisable seulement sur Github
 
-<!-- TODO : use Tailwind Alert -->
-- Github Actions sera abrégé en GA
+<Alert> 
+Github Actions sera abrégé en GA
+</Alert>
 
 <!-- Tip : ne mettez pas le mot "philosophie" dans vos slides au risque de se retrouver avec Amel Bent dans la tête -->
 
@@ -300,11 +303,12 @@ on: workflow_dispatch
 
 <v-click>
 
+<Alert type="info">
 Tip: Certains events ne se trigger seulement avec les fichiers YAML présents sur la branche par défaut.
+</Alert>
 
 </v-click>
 
-<!-- TODO : use Tailwind Alert -->
 
 ---
 
@@ -517,11 +521,18 @@ jobs:
 
 - Des tâches qui composent un job
 - Lancé de manière séquentielle
-- Chaque step est lancée dans son process (WARNING: Si vous changez des env vars, elles ne seront pas répercutés)
+- Chaque step est lancée dans son process
 - 2 grandes familles :
   - les shell
   - les actions
- 
+
+
+
+<Alert type="warning"> 
+Si vous changez des env vars sans passer par GA, elles ne seront pas répercutés car chaque process de step est isolé
+</Alert>
+
+
 ---
 
 
@@ -643,7 +654,7 @@ jobs:
           # run phpunit command without coverage
           
       - name: Run tests with coverage
-        if: ${{ steps.branch-name.outputs.current_branch == 'dev' }} TODO add step to get current branch
+        if: ${{ steps.branch-name.outputs.current_branch == 'dev' }}
         run: 
           # run phpunit command without coverage
 ```
@@ -828,8 +839,10 @@ steps:
 ```
 ````
 
-WARNING : Un nettoyage du cache est effectué par Github s'il n'est pas utilisé
 
+<Alert type="warning"> 
+Un nettoyage du cache est effectué par Github s'il n'est pas utilisé
+</Alert>
 
 ---
 
