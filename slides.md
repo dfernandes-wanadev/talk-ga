@@ -304,7 +304,7 @@ on: workflow_dispatch
 <v-click>
 
 <Alert type="info">
-Tip: Certains events ne se trigger seulement avec les fichiers YAML présents sur la branche par défaut.
+Certains events ne se trigger seulement avec les fichiers YAML présents sur la branche par défaut.
 </Alert>
 
 </v-click>
@@ -950,13 +950,57 @@ steps:
 
 ```
 
+<v-click>
+  <Link to="bonus">Bonus ?</Link>
+</v-click>
+
 ---
 
 Sécurité
 
 ---
 
-Le pricing repo privé/public
+# Le pricing
+
+https://docs.github.com/en/billing/managing-billing-for-your-products/managing-billing-for-github-actions/about-billing-for-github-actions
+
+<v-click>
+
+Gratuit sur les repo publiques et les runners self-hosted.
+
+<Alert type="warning">
+Il existe des runners plus gros que les runners normaux mais ceux-ci sont facturés sur tous les repo publiques/privés.
+</Alert>
+
+</v-click>
+
+<v-click>
+
+2 "unités" qui sont facturées :
+- l'espace disque des GA Artifacts + Github Registry
+- Le total du temps d'exécution de vos GA
+
+</v-click>
+
+---
+
+# Le pricing : les quotas
+
+Des quotas inclus selon votre compte : 
+
+| Plan                          | Storage | Minutes (per month) |
+| ----------------------------- | ------- | ------------------- |
+| GitHub Free                   | 500 MB  | 2,000               |
+| GitHub Pro                    | 1 GB    | 3,000               |
+| GitHub Free for organizations | 500 MB  | 2,000               |
+| GitHub Team                   | 2 GB    | 3,000               |
+
+Après le quota écoulé :
+- Storage : $0.008 USD / GB / jour
+- Minutes:  $0.008 USD / minute
+
+
+
 
 ---
 layout: center
@@ -971,11 +1015,21 @@ class: text-center
 
 ---
 
-# Déployer nos slides sur Github Pages
+# Demo : Déployer nos slides sur Github Pages avec GA
 
 <br/>
 
 <PoweredBySlidev mt-10 />
+
+- Un outil qui permet de créer ses slides en markdown en se basant sur des layouts de slides et en y appliquant un theme
+- Développé en Vue
+- Une application sans backend, juste du HTML/CSS/JS à builder
+
+<Alert type="info">
+Pour déployer sur Github Pages (Free Tier), il faut que le repo soit publique.
+</Alert>
+
+https://github.com/damienfern/talk_github_actions/tree/demo/deploy-gh-pages
 
 
 ---
@@ -985,16 +1039,23 @@ class: text-center
 
 # Merci
 
+
+<div class="grid grid-cols-2 items-center pt-10 gap-20" >
+  <img src="/qrcode-perso.png" width="250"  height="250"  class="rounded-lg" />
+  <img src="/qrcode-slides.png" width="250"  height="250"  class="rounded-lg" />
+</div>
+
 ---
 
 # Source 
 
 - https://blog.stephane-robert.info/docs/pipeline-cicd/github/introduction/
 - https://docs.github.com/en/actions
-- 
+
 ---
 layout: center
 class: text-center
+routeAlias: bonus
 ---
 
 # BONUS
