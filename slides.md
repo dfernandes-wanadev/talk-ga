@@ -649,6 +649,8 @@ jobs:
 ```
 ````
 
+<!-- actions/upload-artifact & download-artifacts pour passer des fichiers entre jobs https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts#passing-data-between-jobs-in-a-workflow -->
+
 ---
 
 # Les actions, simplifier vos steps
@@ -705,7 +707,7 @@ But : Découper en blocs fonctionnels, modulaires et réutilisable (DRY)
 
 <v-clicks>
 
-- Fournies par Github (`actions/checkout`, `actions/cache`, `actions/http-client`)
+- Fournies par Github (`actions/checkout`, `actions/cache`, `actions/http-client`,...etc.)
 - Marketplace
 - Custom Actions
 
@@ -962,13 +964,6 @@ class: text-center
 
 <PoweredBySlidev mt-10 />
 
----
-
-# Source 
-
-https://blog.stephane-robert.info/docs/pipeline-cicd/github/introduction/
-
-Doc github actions
 
 ---
 layout: center
@@ -977,6 +972,13 @@ class: text-center
 
 # Merci
 
+---
+
+# Source 
+
+- https://blog.stephane-robert.info/docs/pipeline-cicd/github/introduction/
+- https://docs.github.com/en/actions
+- 
 ---
 layout: center
 class: text-center
