@@ -88,6 +88,17 @@ image: "/kazaplan-slide1.png"
 backgroundSize: contain
 ---
 
+<!--
+
+Kazaplan est:
+- application web accessible au grand public
+- permet de concevoir des plans en 2D et 3D de vos espaces de vie interieur et extérieur
+- visualiser, aménager et personnaliser ses espaces de vie
+
+Un outil pratique pour donner forme à vos idées d’aménagement.
+
+-->
+
 ---
 layout: image
 image: "/kazaplan-configure.png"
@@ -638,26 +649,6 @@ jobs:
           echo "PHP and Composer are ready."
         # ... install deps and run tests
 ```
-```yaml
-# ...
-jobs:
-  unit-test:
-    # ... ubuntu
-    steps:
-      # ... clone, install php, composer and deps
-      - name: Get branch name
-        id: branch-name
-        run: echo "current_branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
-      - name: Run tests without coverage
-        if: ${{ steps.branch-name.outputs.current_branch != 'dev' }}
-        run:
-          # run phpunit command without coverage
-          
-      - name: Run tests with coverage
-        if: ${{ steps.branch-name.outputs.current_branch == 'dev' }}
-        run: 
-          # run phpunit command without coverage
-```
 ````
 
 <!-- actions/upload-artifact & download-artifacts pour passer des fichiers entre jobs https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts#passing-data-between-jobs-in-a-workflow -->
@@ -706,6 +697,37 @@ jobs:
 
 ---
 
+# Les steps et les outputs
+
+#### Objectif : lancer les tests unitaires avec le coverage seulement sur la branche dev dans le même workflow
+
+````md magic-move
+```yaml
+# ...
+```
+```yaml {all|4}
+# ...
+- name: Get branch name
+  id: branch-name
+  run: echo "current_branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
+# ...
+```
+```yaml {all|6|3,4,6}
+# ...
+- name: Get branch name
+  id: branch-name
+  run: echo "current_branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
+- name: Run tests with coverage
+  if: ${{ steps.branch-name.outputs.current_branch == 'dev' }}
+  run:
+    # run phpunit command with coverage
+# ...
+```
+````
+
+
+---
+
 # Les actions
 But : Découper en blocs fonctionnels, modulaires et réutilisable (DRY)
 
@@ -726,20 +748,50 @@ But : Découper en blocs fonctionnels, modulaires et réutilisable (DRY)
 
 ---
 
-# Les Custom Actions
+# Cacher vos dépendances pour des CI plus rapides
 
-<v-clicks>
+````md magic-move
+```yaml {all|4|6,7|8|9,10|all}
+# ...
+steps:
+    - name: Restore vendors from cache
+      uses: actions/cache@v4
+      with:
+          path: |
+              vendor
+          key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
+          restore-keys: |
+              ${{ runner.os }}-vendor-
+    - name: Behat
+      run: |
+        php ./vendor/bin/behat -f progress -o std
+```
+```yaml {all|12-15|4,13}
+# ...
+steps:
+    - name: Restore vendors from cache
+      id: cache-vendor
+      uses: actions/cache@v4
+      with:
+        path: |
+            vendor
+        key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
+        restore-keys: |
+            ${{ runner.os }}-vendor-
+    - name: Install PHP dependencies
+      if: ${{ steps.cache-vendor.outputs.cache-hit != 'true' }}
+      run: |
+          /usr/local/bin/composer install --no-progress --no-scripts
+    - name: Behat
+      run: |
+        php ./vendor/bin/behat -f progress -o std
+```
+````
 
-- Partageable à :
-  - Projet
-  - Organisation
-  - Tout le monde
-- 3 manières de créer des actions :
-  - Image docker 
-  - Javascript
-  - Yaml (les composites actions)
 
-</v-clicks>
+<Alert type="warning"> 
+Un nettoyage du cache est effectué par Github s'il n'est pas utilisé
+</Alert>
 
 ---
 
@@ -799,50 +851,20 @@ Une liste d'actions selon vos besoins : https://github.com/sdras/awesome-actions
 
 ---
 
-# Cacher vos dépendances pour des CI plus rapides
+# Les Custom Actions
 
-````md magic-move
-```yaml {all|4|6,7|8|9,10|all}
-# ...
-steps:
-    - name: Restore vendors from cache
-      uses: actions/cache@v4
-      with:
-          path: |
-              vendor
-          key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
-          restore-keys: |
-              ${{ runner.os }}-vendor-
-    - name: Behat
-      run: |
-        php ./vendor/bin/behat -f progress -o std
-```
-```yaml {all|12-15|4,13}
-# ...
-steps:
-    - name: Restore vendors from cache
-      id: cache-vendor
-      uses: actions/cache@v4
-      with:
-        path: |
-            vendor
-        key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
-        restore-keys: |
-            ${{ runner.os }}-vendor-
-    - name: Install PHP dependencies
-      if: ${{ steps.cache-vendor.outputs.cache-hit != 'true' }}
-      run: |
-          /usr/local/bin/composer install --no-progress --no-scripts
-    - name: Behat
-      run: |
-        php ./vendor/bin/behat -f progress -o std
-```
-````
+<v-clicks>
 
+- Partageable à :
+  - Projet
+  - Organisation
+  - Tout le monde
+- 3 manières de créer des actions :
+  - Image docker 
+  - Javascript
+  - Yaml (les composites actions)
 
-<Alert type="warning"> 
-Un nettoyage du cache est effectué par Github s'il n'est pas utilisé
-</Alert>
+</v-clicks>
 
 ---
 
@@ -922,7 +944,6 @@ runs:
           with:
               path: |
                   vendor
-                  node_modules
               key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
               restore-keys: |
                   ${{ runner.os }}-vendor-
@@ -1133,14 +1154,3 @@ https://github.com/dorny/paths-filter
 
 Créer ses propres actions à mettre sur le marketplace
 
-
----
-layout: center
-class: text-center
----
-
-# Learn More
-
-[Documentation](https://sli.dev) · [GitHub](https://github.com/slidevjs/slidev) · [Showcases](https://sli.dev/resources/showcases)
-
-<PoweredBySlidev mt-10 />
