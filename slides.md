@@ -107,7 +107,7 @@ backgroundSize: contain
 </div>
 <div class="flex justify-center p-10">
   <div class="grid grid-cols-3 items-center pt-10" >
-    <img src="/gitlab-ci-logo.png" width="150" height="150" v-click />
+    <img src="/gitlab-ci-logo.png" class="rounded-lg p-1" width="150" height="150" style="background-color: white;"  v-click />
     <span class="text-center text-8xl" v-click >&rarr;</span>
     <img v-click src="/gha_logo.svg"  class="rounded-lg p-1" width="150" height="150" style="background-color: white;" />
   </div>
@@ -732,7 +732,7 @@ But : Découper en blocs fonctionnels, modulaires et réutilisable (DRY)
 
 - Partageable à :
   - Projet
-  - Org
+  - Organisation
   - Tout le monde
 - 3 manières de créer des actions :
   - Image docker 
@@ -848,7 +848,7 @@ Un nettoyage du cache est effectué par Github s'il n'est pas utilisé
 
 # Les actions composites
 
-But : réutiliser et partager à travers des workflow des étapes d'un workflow
+But : réutiliser et partager des étapes d'un workflow
 
 Avantages :
 - Maintenance centralisée
@@ -956,7 +956,53 @@ steps:
 
 ---
 
-Sécurité
+# Sécurité : les secrets
+
+Définition : des informations sensibles (clés SSH, mots de passe, clés API,...etc.)
+
+3 niveaux pour les définir : 
+- Repository
+- Environnement
+- Organisation
+
+
+https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions
+
+---
+
+# Les secrets : exemple
+
+```yaml
+# ...
+steps:
+  - name: Hello world action
+    with: # Set the secret as an input
+      super_secret: ${{ secrets.SuperSecret }}
+    env: # Or as an environment variable
+      super_secret: ${{ secrets.SuperSecret }}
+```
+
+<Alert type="error">
+Vous ne pouvez pas utiliser les secrets directement dans vos actions.
+</Alert>
+
+<v-click>
+
+```yaml
+# ...
+steps:
+  - shell: bash
+    env:
+      SUPER_SECRET: ${{ secrets.SuperSecret }}
+    run: |
+      example-command "$SUPER_SECRET"
+```
+
+<Alert type="info">
+Avantage : cachez les secrets dans les logs de vos jobs.
+</Alert>
+
+</v-click>
 
 ---
 
